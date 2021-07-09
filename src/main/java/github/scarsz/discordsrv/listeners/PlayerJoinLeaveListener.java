@@ -33,7 +33,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerJoinLeaveListener implements Listener {
 
@@ -100,34 +99,6 @@ public class PlayerJoinLeaveListener implements Listener {
                 DiscordSRV.getPlugin().getNicknameUpdater().setNickname(DiscordUtil.getMemberById(discordId), player);
             });
         }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST) //priority needs to be different to MONITOR to avoid problems with permissions check when PEX is used, it is at lowest so that it executes before VanishNoPacket's player leave listener and is able to see whether the player is vanished
-    public void PlayerQuitEvent(PlayerQuitEvent event) {
-        final Player player = event.getPlayer();
-        if (PlayerUtil.isVanished(player)) {
-            DiscordSRV.debug("Not sending a quit message for " + event.getPlayer().getName() + " because a vanish plugin reported them as vanished");
-            return;
-        }
-
-        MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerLeaveMessage");
-
-        // make sure quit messages enabled
-        if (messageFormat == null) return;
-
-        final String name = player.getName();
-
-        // no quit message, user shouldn't have one from permission
-        if (GamePermissionUtil.hasPermission(event.getPlayer(), "discordsrv.silentquit")) {
-            DiscordSRV.info(LangUtil.InternalMessage.SILENT_QUIT.toString()
-                    .replace("{player}", name)
-            );
-            return;
-        }
-
-        // player doesn't have silent quit, show quit message
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(),
-                () -> DiscordSRV.getPlugin().sendLeaveMessage(event.getPlayer(), event.getQuitMessage()));
     }
 
 }

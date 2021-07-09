@@ -1058,14 +1058,7 @@ public class DiscordSRV extends JavaPlugin {
 
         // register events
         new PlayerBanListener();
-        new PlayerDeathListener();
         new PlayerJoinLeaveListener();
-        try {
-            Class.forName("org.bukkit.event.player.PlayerAdvancementDoneEvent");
-            new PlayerAdvancementDoneListener();
-        } catch (Exception ignored) {
-            new PlayerAchievementsListener();
-        }
 
         // plugin hooks
         for (String hookClassName : Arrays.asList(
