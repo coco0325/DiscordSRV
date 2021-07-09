@@ -902,7 +902,6 @@ public class DiscordSRV extends JavaPlugin {
                     .addEventListeners(new DiscordBanListener())
                     .addEventListeners(new DiscordChatListener())
                     .addEventListeners(new DiscordConsoleListener())
-                    .addEventListeners(new DiscordAccountLinkListener())
                     .addEventListeners(new DiscordDisconnectListener())
                     .addEventListeners(groupSynchronizationManager)
                     .setContextEnabled(false)
@@ -1055,17 +1054,6 @@ public class DiscordSRV extends JavaPlugin {
             accountLinkManager = new FileAccountLinkManager();
         }
         Bukkit.getPluginManager().registerEvents(accountLinkManager, this);
-
-        // register events
-        new PlayerBanListener();
-        new PlayerDeathListener();
-        new PlayerJoinLeaveListener();
-        try {
-            Class.forName("org.bukkit.event.player.PlayerAdvancementDoneEvent");
-            new PlayerAdvancementDoneListener();
-        } catch (Exception ignored) {
-            new PlayerAchievementsListener();
-        }
 
         // plugin hooks
         for (String hookClassName : Arrays.asList(

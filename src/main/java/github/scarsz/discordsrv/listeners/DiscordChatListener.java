@@ -86,24 +86,6 @@ public class DiscordChatListener extends ListenerAdapter {
         // return if should not send discord chat
         if (!DiscordSRV.config().getBoolean("DiscordChatChannelDiscordToMinecraft")) return;
 
-        // enforce required account linking
-        if (DiscordSRV.config().getBoolean("DiscordChatChannelRequireLinkedAccount")) {
-            if (DiscordSRV.getPlugin().getAccountLinkManager() == null) {
-                event.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(LangUtil.Message.FAILED_TO_CHECK_LINKED_ACCOUNT.toString()).queue());
-                DiscordUtil.deleteMessage(event.getMessage());
-                return;
-            }
-
-            boolean hasLinkedAccount = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId()) != null;
-            if (!hasLinkedAccount && !event.getAuthor().isBot()) {
-                event.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(LangUtil.Message.LINKED_ACCOUNT_REQUIRED.toString()
-                        .replace("%message%", event.getMessage().getContentRaw())
-                ).queue());
-                DiscordUtil.deleteMessage(event.getMessage());
-                return;
-            }
-        }
-
         // block bots
         if (DiscordSRV.config().getBoolean("DiscordChatChannelBlockBots") && event.getAuthor().isBot()) {
             DiscordSRV.debug("Received Discord message from bot " + event.getAuthor() + " but DiscordChatChannelBlockBots is on");

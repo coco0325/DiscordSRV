@@ -49,11 +49,9 @@ public class CommandManager {
                 CommandDebug.class,
                 CommandHelp.class,
                 CommandLanguage.class,
-                CommandLink.class,
                 CommandLinked.class,
                 CommandReload.class,
-                CommandResync.class,
-                CommandUnlink.class
+                CommandResync.class
         );
 
         for (Class<?> clazz : commandClasses) {
