@@ -45,7 +45,6 @@ import github.scarsz.discordsrv.modules.requirelink.RequireLinkModule;
 import github.scarsz.discordsrv.modules.voice.VoiceModule;
 import github.scarsz.discordsrv.objects.CancellationDetector;
 import github.scarsz.discordsrv.objects.ConsoleMessage;
-import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.objects.log4j.ConsoleAppender;
 import github.scarsz.discordsrv.objects.log4j.JdaFilter;
@@ -1019,10 +1018,9 @@ public class DiscordSRV extends JavaPlugin {
         // start server watchdog
         if (serverWatchdog != null && serverWatchdog.getState() != Thread.State.NEW) serverWatchdog.interrupt();
         serverWatchdog = new ServerWatchdog();
-        serverWatchdog.start();
-
-        // start lag (tps) monitor
-        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            serverWatchdog.start();
+        }, 2400);
 
         // cancellation detector
         reloadCancellationDetector();

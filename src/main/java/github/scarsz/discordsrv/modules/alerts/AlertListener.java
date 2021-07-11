@@ -26,7 +26,6 @@ import alexh.weak.Dynamic;
 import alexh.weak.Weak;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
-import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
@@ -456,8 +455,6 @@ public class AlertListener implements Listener, EventListener {
                     // replace any normal placeholders
                     content = NamedValueFormatter.format(content, key -> {
                         switch (key) {
-                            case "tps":
-                                return Lag.getTPSString();
                             case "time":
                             case "date":
                                 return TimeUtil.timeStamp();

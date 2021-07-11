@@ -24,10 +24,7 @@ package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.MessageFormat;
-import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
-import github.scarsz.discordsrv.util.*;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -44,31 +41,6 @@ public class PlayerJoinLeaveListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
 
-        // if player is OP & update is available tell them
-        if (GamePermissionUtil.hasPermission(player, "discordsrv.updatenotification") && DiscordSRV.updateIsAvailable) {
-            MessageUtil.sendMessage(player, DiscordSRV.getPlugin().getDescription().getVersion().endsWith("-SNAPSHOT")
-                    ? ChatColor.GRAY + "There is a newer development build of DiscordSRV available. Download it at https://snapshot.discordsrv.com/"
-                    : ChatColor.AQUA + "An update to DiscordSRV is available. Download it at https://www.spigotmc.org/resources/discordsrv.18494/ or https://get.discordsrv.com"
-            );
-        }
-
-        if (DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) {
-            // trigger a synchronization for the player
-            Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () ->
-                    DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(
-                            player,
-                            GroupSynchronizationManager.SyncDirection.AUTHORITATIVE,
-                            true,
-                            GroupSynchronizationManager.SyncCause.PLAYER_JOIN
-                    )
-            );
-        }
-
-        if (PlayerUtil.isVanished(player)) {
-            DiscordSRV.debug("Not sending a join message for " + event.getPlayer().getName() + " because a vanish plugin reported them as vanished");
-            return;
-        }
-
         MessageFormat messageFormat = event.getPlayer().hasPlayedBefore()
                 ? DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerJoinMessage")
                 : DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerFirstJoinMessage");
@@ -76,29 +48,11 @@ public class PlayerJoinLeaveListener implements Listener {
         // make sure join messages enabled
         if (messageFormat == null) return;
 
-        final String name = player.getName();
-
-        // check if player has permission to not have join messages
-        if (GamePermissionUtil.hasPermission(event.getPlayer(), "discordsrv.silentjoin")) {
-            DiscordSRV.info(LangUtil.InternalMessage.SILENT_JOIN.toString()
-                    .replace("{player}", name)
-            );
-            return;
-        }
-
-        // player doesn't have silent join permission, send join message
 
         // schedule command to run in a second to be able to capture display name
         Bukkit.getScheduler().runTaskLaterAsynchronously(DiscordSRV.getPlugin(), () ->
                 DiscordSRV.getPlugin().sendJoinMessage(event.getPlayer(), event.getJoinMessage()), 20);
 
-        // if enabled, set the player's discord nickname as their ign
-        if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
-            Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
-                final String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
-                DiscordSRV.getPlugin().getNicknameUpdater().setNickname(DiscordUtil.getMemberById(discordId), player);
-            });
-        }
     }
 
 }

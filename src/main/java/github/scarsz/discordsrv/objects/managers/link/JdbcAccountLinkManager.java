@@ -347,6 +347,14 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
     @Override
     public String process(String code, String discordId) {
         ensureOffThread(false);
+
+        code = code.replaceAll("[^0-9]", "");
+        UUID uuid = getLinkingCodes().get(code);
+
+        if (uuid != null && Bukkit.getOnlinePlayers().stream().noneMatch(player -> player.getUniqueId() == uuid)) {
+            return null;
+        }
+
         UUID existingUuid = getUuid(discordId);
         boolean alreadyLinked = existingUuid != null;
         if (alreadyLinked) {
@@ -361,9 +369,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
         }
 
         // strip the code to get rid of non-numeric characters
-        code = code.replaceAll("[^0-9]", "");
 
-        UUID uuid = getLinkingCodes().get(code);
         if (uuid != null) {
             link(discordId, uuid);
 
@@ -380,10 +386,12 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
                         .replace("%username%", DiscordUtil.getUserById(discordId).getName())
                         .replace("%id%", DiscordUtil.getUserById(discordId).getId())
                 );
+            }else{
+                 return null;
             }
 
             return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
-                    .replace("%name%", player.getName() != null ? player.getName() : "<Unknown>")
+                    .replace("%name%", player.getName() != null ? player.getName() : "<未知>")
                     .replace("%uuid%", uuid.toString());
         }
 
