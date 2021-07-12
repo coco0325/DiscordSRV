@@ -351,7 +351,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
         code = code.replaceAll("[^0-9]", "");
         UUID uuid = getLinkingCodes().get(code);
 
-        if (uuid != null && Bukkit.getOnlinePlayers().stream().noneMatch(player -> player.getUniqueId() == uuid)) {
+        if (uuid != null && Bukkit.getOnlinePlayers().stream().noneMatch(player -> player.getUniqueId().equals(uuid))) {
             return null;
         }
 
