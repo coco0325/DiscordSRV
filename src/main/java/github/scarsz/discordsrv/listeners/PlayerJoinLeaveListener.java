@@ -22,8 +22,10 @@
 
 package github.scarsz.discordsrv.listeners;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.MessageFormat;
+import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,6 +43,18 @@ public class PlayerJoinLeaveListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
 
+        if (DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) {
+            // trigger a synchronization for the player
+            Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () ->
+                    DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(
+                            player,
+                            GroupSynchronizationManager.SyncDirection.AUTHORITATIVE,
+                            true,
+                            GroupSynchronizationManager.SyncCause.PLAYER_JOIN
+                    )
+            );
+        }
+
         MessageFormat messageFormat = event.getPlayer().hasPlayedBefore()
                 ? DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerJoinMessage")
                 : DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerFirstJoinMessage");
@@ -52,7 +66,6 @@ public class PlayerJoinLeaveListener implements Listener {
         // schedule command to run in a second to be able to capture display name
         Bukkit.getScheduler().runTaskLaterAsynchronously(DiscordSRV.getPlugin(), () ->
                 DiscordSRV.getPlugin().sendJoinMessage(event.getPlayer(), event.getJoinMessage()), 20);
-
     }
 
 }
