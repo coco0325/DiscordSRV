@@ -35,6 +35,8 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.ComponentLayout;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.AuditableRestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
@@ -130,6 +132,12 @@ public class DiscordChatListener extends ListenerAdapter {
         Message message1 = new Message() {
             @Nullable
             @Override
+            public MessageReference getMessageReference() {
+                return rawmessage.getMessageReference();
+            }
+
+            @Nullable
+            @Override
             public Message getReferencedMessage() {
                 return rawmessage.getReferencedMessage();
             }
@@ -184,12 +192,12 @@ public class DiscordChatListener extends ListenerAdapter {
 
             @NotNull
             @Override
-            public List<IMentionable> getMentions(@NotNull MentionType... mentionTypes) {
+            public List<IMentionable> getMentions(@NotNull MentionType @NotNull ... mentionTypes) {
                 return rawmessage.getMentions(mentionTypes);
             }
 
             @Override
-            public boolean isMentioned(@NotNull IMentionable iMentionable, @NotNull MentionType... mentionTypes) {
+            public boolean isMentioned(@NotNull IMentionable iMentionable, @NotNull MentionType @NotNull ... mentionTypes) {
                 return rawmessage.isMentioned(iMentionable, mentionTypes);
             }
 
@@ -287,11 +295,6 @@ public class DiscordChatListener extends ListenerAdapter {
                         return 0;
                     }
 
-                    @Override
-                    public boolean isFake() {
-                        return false;
-                    }
-
                     @NotNull
                     @Override
                     public String getAsMention() {
@@ -320,7 +323,6 @@ public class DiscordChatListener extends ListenerAdapter {
             @NotNull
             @Override
             public String getContentDisplay() {
-
                 return MessageUtil.stripLegacy(rawmessage.getContentDisplay());
             }
 
@@ -408,6 +410,12 @@ public class DiscordChatListener extends ListenerAdapter {
 
             @NotNull
             @Override
+            public List<ActionRow> getActionRows() {
+                return rawmessage.getActionRows();
+            }
+
+            @NotNull
+            @Override
             public List<Emote> getEmotes() {
                 return rawmessage.getEmotes();
             }
@@ -451,6 +459,18 @@ public class DiscordChatListener extends ListenerAdapter {
             @Override
             public MessageAction editMessage(@NotNull MessageEmbed messageEmbed) {
                 return rawmessage.editMessage(messageEmbed);
+            }
+
+            @NotNull
+            @Override
+            public MessageAction editMessageEmbeds(@NotNull Collection<? extends MessageEmbed> collection) {
+                return rawmessage.editMessageEmbeds(collection);
+            }
+
+            @NotNull
+            @Override
+            public MessageAction editMessageComponents(@NotNull Collection<? extends ComponentLayout> collection) {
+                return rawmessage.editMessageComponents(collection);
             }
 
             @NotNull
@@ -609,7 +629,6 @@ public class DiscordChatListener extends ListenerAdapter {
 
             @Override
             public void formatTo(Formatter formatter, int flags, int width, int precision) {
-
             }
 
             @Override
