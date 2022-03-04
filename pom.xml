@@ -72,15 +72,15 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>16</source>
+                    <target>16</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
+                <version>3.3.0-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -327,6 +327,10 @@
 
     <repositories>
         <repository>
+            <id>lang-utils-repo</id>
+            <url>https://ci.nyaacat.com/maven/</url>
+        </repository>
+        <repository>
             <id>scarsz</id>
             <url>https://nexus.scarsz.me/content/groups/public/</url>
         </repository>
@@ -378,9 +382,9 @@
 
         <!-- bukkit -->
         <dependency>
-            <groupId>com.destroystokyo.paper</groupId>
+            <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.16.5-R0.1-SNAPSHOT</version>
+            <version>1.17.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
             <!-- system scope stuff below is for convenience when needing to dig through NMS in IDE -->
 <!--            <scope>system</scope>-->
@@ -404,7 +408,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.20</version>
+            <version>1.18.22</version>
             <scope>provided</scope>
         </dependency>
 
@@ -416,14 +420,14 @@
             <artifactId>log4j-core</artifactId>
             <!-- MC <  1.12 = 2.0-beta9 -->
             <!-- MC >= 1.12 = 2.1 -->
-            <version>2.0-beta9</version>
+            <version>2.1</version>
             <scope>provided</scope>
         </dependency>
         <!-- slf4j -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
-            <version>1.7.25</version>
+            <version>1.7.32</version>
         </dependency>
 
         <!-- apache utilities -->
@@ -452,7 +456,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>30.1.1-jre</version>
+            <version>31.0.1-jre</version>
         </dependency>
 
         <!-- mysql driver -->
@@ -488,14 +492,14 @@
         <dependency>
             <groupId>org.minidns</groupId>
             <artifactId>minidns-hla</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
 
         <!-- spEL expressions -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-expression</artifactId>
-            <version>5.2.7.RELEASE</version>
+            <version>5.3.13</version>
         </dependency>
 
         <!-- text parsing & serialization -->
@@ -504,30 +508,30 @@
         <dependency>
             <groupId>dev.vankka</groupId>
             <artifactId>MCDiscordReserializer</artifactId>
-            <version>4.2.1</version>
+            <version>4.2.2</version>
         </dependency>
 
         <!-- Kyori Adventure -->
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-api</artifactId>
-            <version>4.8.0</version>
+            <version>4.9.3</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-legacy</artifactId>
-            <version>4.8.0</version>
+            <version>4.9.3</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-gson</artifactId>
-            <version>4.8.0</version>
+            <version>4.9.3</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-platform-bukkit</artifactId>
             <!-- if it breaks blame the lack of releases -->
-            <version>4.0.0-SNAPSHOT</version>
+            <version>4.0.0</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
@@ -620,7 +624,7 @@
         <dependency>
             <groupId>net.luckperms</groupId>
             <artifactId>api</artifactId>
-            <version>5.0</version>
+            <version>5.3</version>
             <scope>provided</scope>
         </dependency>
 
@@ -693,6 +697,12 @@
             <artifactId>junit</artifactId>
             <version>4.13.2</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.meowj</groupId>
+            <artifactId>LangUtils</artifactId>
+            <version>2.5-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

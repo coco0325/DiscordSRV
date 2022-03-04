@@ -97,6 +97,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.PermissionDefault;
@@ -551,6 +552,11 @@ public class DiscordSRV extends JavaPlugin {
                     @Override
                     public @Nullable ChunkGenerator getDefaultWorldGenerator(@NotNull String worldName, @Nullable String id) {
                         return DiscordSRV.this.getDefaultWorldGenerator(worldName, id);
+                    }
+
+                    @Override
+                    public @Nullable BiomeProvider getDefaultBiomeProvider(@NotNull String worldName, @Nullable String id) {
+                        return DiscordSRV.this.getDefaultBiomeProvider(worldName, id);
                     }
 
                     @Override

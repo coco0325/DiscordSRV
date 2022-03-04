@@ -25,6 +25,7 @@ package github.scarsz.discordsrv.objects;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
@@ -226,5 +227,10 @@ public class SingleCommandSender implements ConsoleCommandSender {
             DiscordSRV.error(e);
             return null;
         }
+    }
+
+    @Override
+    public @NotNull Component name() {
+        return sender.name();
     }
 }

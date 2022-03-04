@@ -458,10 +458,10 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 );
             }
 
-            guild.modifyMemberRoles(member, add, remove).reason("DiscordSRV synchronization").queue(
+            /*guild.modifyMemberRoles(member, add, remove).reason("DiscordSRV synchronization").queue(
                     v -> DiscordSRV.debug("Synchronization #" + id + " for {" + player.getName() + ":" + member + "} successful in " + guild + ": {add=" + add + ", remove=" + remove + "}"),
                     t -> DiscordSRV.debug("Synchronization #" + id + " for {" + player.getName() + ":" + member + "} failed in " + guild + ": " + ExceptionUtils.getStackTrace(t)));
-            justModifiedRoles.put(member, guildEntry);
+            justModifiedRoles.put(member, guildEntry);*/
         }
 
         DiscordSRV.debug(synchronizationSummary);

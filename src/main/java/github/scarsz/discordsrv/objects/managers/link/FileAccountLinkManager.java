@@ -246,7 +246,7 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
         if (discordId == null) return;
 
         synchronized (linkedAccounts) {
-            beforeUnlink(uuid, discordId);
+            //beforeUnlink(uuid, discordId);
             linkedAccounts.removeValue(uuid);
         }
 
@@ -262,7 +262,7 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
         if (uuid == null) return;
 
         synchronized (linkedAccounts) {
-            beforeUnlink(uuid, discordId);
+            //beforeUnlink(uuid, discordId);
             linkedAccounts.remove(discordId);
         }
         afterUnlink(uuid, discordId);

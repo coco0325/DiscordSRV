@@ -43,6 +43,8 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 
@@ -408,7 +410,6 @@ public class MessageUtil {
             DiscordSRV.debug("Tried stripping blank message");
             return "";
         }
-
         return STRIP_PATTERN.matcher(text).replaceAll("");
     }
 

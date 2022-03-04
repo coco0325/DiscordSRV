@@ -32,21 +32,29 @@ import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.objects.SingleCommandSender;
 import github.scarsz.discordsrv.util.*;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.requests.restaction.AuditableRestAction;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.requests.restaction.pagination.ReactionPaginationAction;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.TextColor;
+import org.apache.commons.collections4.Bag;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -116,7 +124,503 @@ public class DiscordChatListener extends ListenerAdapter {
             return;
         }
 
-        DiscordGuildMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePreProcessEvent(event));
+        Message rawmessage = event.getMessage();
+        User rawuser = event.getAuthor();
+
+        Message message1 = new Message() {
+            @Nullable
+            @Override
+            public Message getReferencedMessage() {
+                return rawmessage.getReferencedMessage();
+            }
+
+            @NotNull
+            @Override
+            public List<User> getMentionedUsers() {
+                return rawmessage.getMentionedUsers();
+            }
+
+            @NotNull
+            @Override
+            public Bag<User> getMentionedUsersBag() {
+                return rawmessage.getMentionedUsersBag();
+            }
+
+            @NotNull
+            @Override
+            public List<TextChannel> getMentionedChannels() {
+                return rawmessage.getMentionedChannels();
+            }
+
+            @NotNull
+            @Override
+            public Bag<TextChannel> getMentionedChannelsBag() {
+                return rawmessage.getMentionedChannelsBag();
+            }
+
+            @NotNull
+            @Override
+            public List<Role> getMentionedRoles() {
+                return rawmessage.getMentionedRoles();
+            }
+
+            @NotNull
+            @Override
+            public Bag<Role> getMentionedRolesBag() {
+                return rawmessage.getMentionedRolesBag();
+            }
+
+            @NotNull
+            @Override
+            public List<Member> getMentionedMembers(@NotNull Guild guild) {
+                return rawmessage.getMentionedMembers();
+            }
+
+            @NotNull
+            @Override
+            public List<Member> getMentionedMembers() {
+                return rawmessage.getMentionedMembers();
+            }
+
+            @NotNull
+            @Override
+            public List<IMentionable> getMentions(@NotNull MentionType... mentionTypes) {
+                return rawmessage.getMentions(mentionTypes);
+            }
+
+            @Override
+            public boolean isMentioned(@NotNull IMentionable iMentionable, @NotNull MentionType... mentionTypes) {
+                return rawmessage.isMentioned(iMentionable, mentionTypes);
+            }
+
+            @Override
+            public boolean mentionsEveryone() {
+                return rawmessage.mentionsEveryone();
+            }
+
+            @Override
+            public boolean isEdited() {
+                return rawmessage.isEdited();
+            }
+
+            @Nullable
+            @Override
+            public OffsetDateTime getTimeEdited() {
+                return rawmessage.getTimeEdited();
+            }
+
+            @NotNull
+            @Override
+            public User getAuthor() {
+                return new User() {
+                    @NotNull
+                    @Override
+                    public String getName() {
+                        return MessageUtil.stripLegacy(rawuser.getName());
+                    }
+
+                    @NotNull
+                    @Override
+                    public String getDiscriminator() {
+                        return rawuser.getDiscriminator();
+                    }
+
+                    @Nullable
+                    @Override
+                    public String getAvatarId() {
+                        return rawuser.getAvatarId();
+                    }
+
+                    @NotNull
+                    @Override
+                    public String getDefaultAvatarId() {
+                        return rawuser.getDefaultAvatarId();
+                    }
+
+                    @NotNull
+                    @Override
+                    public String getAsTag() {
+                        return rawuser.getAsTag();
+                    }
+
+                    @Override
+                    public boolean hasPrivateChannel() {
+                        return rawuser.hasPrivateChannel();
+                    }
+
+                    @NotNull
+                    @Override
+                    public RestAction<PrivateChannel> openPrivateChannel() {
+                        return rawuser.openPrivateChannel();
+                    }
+
+                    @NotNull
+                    @Override
+                    public List<Guild> getMutualGuilds() {
+                        return rawuser.getMutualGuilds();
+                    }
+
+                    @Override
+                    public boolean isBot() {
+                        return rawuser.isBot();
+                    }
+
+                    @Override
+                    public boolean isSystem() {
+                        return rawuser.isSystem();
+                    }
+
+                    @NotNull
+                    @Override
+                    public JDA getJDA() {
+                        return rawuser.getJDA();
+                    }
+
+                    @NotNull
+                    @Override
+                    public EnumSet<UserFlag> getFlags() {
+                        return rawuser.getFlags();
+                    }
+
+                    @Override
+                    public int getFlagsRaw() {
+                        return 0;
+                    }
+
+                    @Override
+                    public boolean isFake() {
+                        return false;
+                    }
+
+                    @NotNull
+                    @Override
+                    public String getAsMention() {
+                        return rawuser.getAsMention();
+                    }
+
+                    @Override
+                    public long getIdLong() {
+                        return 0;
+                    }
+                };
+            }
+
+            @Nullable
+            @Override
+            public Member getMember() {
+                return rawmessage.getMember();
+            }
+
+            @NotNull
+            @Override
+            public String getJumpUrl() {
+                return rawmessage.getJumpUrl();
+            }
+
+            @NotNull
+            @Override
+            public String getContentDisplay() {
+
+                return MessageUtil.stripLegacy(rawmessage.getContentDisplay());
+            }
+
+            @NotNull
+            @Override
+            public String getContentRaw() {
+                return rawmessage.getContentRaw();
+            }
+
+            @NotNull
+            @Override
+            public String getContentStripped() {
+                return rawmessage.getContentStripped();
+            }
+
+            @NotNull
+            @Override
+            public List<String> getInvites() {
+                return rawmessage.getInvites();
+            }
+
+            @Nullable
+            @Override
+            public String getNonce() {
+                return rawmessage.getNonce();
+            }
+
+            @Override
+            public boolean isFromType(@NotNull ChannelType channelType) {
+                return rawmessage.isFromType(channelType);
+            }
+
+            @NotNull
+            @Override
+            public ChannelType getChannelType() {
+                return rawmessage.getChannelType();
+            }
+
+            @Override
+            public boolean isWebhookMessage() {
+                return rawmessage.isWebhookMessage();
+            }
+
+            @NotNull
+            @Override
+            public MessageChannel getChannel() {
+                return rawmessage.getChannel();
+            }
+
+            @NotNull
+            @Override
+            public PrivateChannel getPrivateChannel() {
+                return rawmessage.getPrivateChannel();
+            }
+
+            @NotNull
+            @Override
+            public TextChannel getTextChannel() {
+                return rawmessage.getTextChannel();
+            }
+
+            @Nullable
+            @Override
+            public Category getCategory() {
+                return rawmessage.getCategory();
+            }
+
+            @NotNull
+            @Override
+            public Guild getGuild() {
+                return rawmessage.getGuild();
+            }
+
+            @NotNull
+            @Override
+            public List<Attachment> getAttachments() {
+                return rawmessage.getAttachments();
+            }
+
+            @NotNull
+            @Override
+            public List<MessageEmbed> getEmbeds() {
+                return rawmessage.getEmbeds();
+            }
+
+            @NotNull
+            @Override
+            public List<Emote> getEmotes() {
+                return rawmessage.getEmotes();
+            }
+
+            @NotNull
+            @Override
+            public Bag<Emote> getEmotesBag() {
+                return rawmessage.getEmotesBag();
+            }
+
+            @NotNull
+            @Override
+            public List<MessageReaction> getReactions() {
+                return rawmessage.getReactions();
+            }
+
+            @NotNull
+            @Override
+            public List<MessageSticker> getStickers() {
+                return rawmessage.getStickers();
+            }
+
+            @Override
+            public boolean isTTS() {
+                return rawmessage.isTTS();
+            }
+
+            @Nullable
+            @Override
+            public MessageActivity getActivity() {
+                return rawmessage.getActivity();
+            }
+
+            @NotNull
+            @Override
+            public MessageAction editMessage(@NotNull CharSequence charSequence) {
+                return rawmessage.editMessage(charSequence);
+            }
+
+            @NotNull
+            @Override
+            public MessageAction editMessage(@NotNull MessageEmbed messageEmbed) {
+                return rawmessage.editMessage(messageEmbed);
+            }
+
+            @NotNull
+            @Override
+            public MessageAction editMessageFormat(@NotNull String s, @NotNull Object... objects) {
+                return rawmessage.editMessageFormat(s, objects);
+            }
+
+            @NotNull
+            @Override
+            public MessageAction editMessage(@NotNull Message message) {
+                return rawmessage.editMessage(message);
+            }
+
+            @NotNull
+            @Override
+            public AuditableRestAction<Void> delete() {
+                return rawmessage.delete();
+            }
+
+            @NotNull
+            @Override
+            public JDA getJDA() {
+                return rawmessage.getJDA();
+            }
+
+            @Override
+            public boolean isPinned() {
+                return rawmessage.isPinned();
+            }
+
+            @NotNull
+            @Override
+            public RestAction<Void> pin() {
+                return rawmessage.pin();
+            }
+
+            @NotNull
+            @Override
+            public RestAction<Void> unpin() {
+                return rawmessage.unpin();
+            }
+
+            @NotNull
+            @Override
+            public RestAction<Void> addReaction(@NotNull Emote emote) {
+                return rawmessage.addReaction(emote);
+            }
+
+            @NotNull
+            @Override
+            public RestAction<Void> addReaction(@NotNull String s) {
+                return rawmessage.addReaction(s);
+            }
+
+            @NotNull
+            @Override
+            public RestAction<Void> clearReactions() {
+                return rawmessage.clearReactions();
+            }
+
+            @NotNull
+            @Override
+            public RestAction<Void> clearReactions(@NotNull String s) {
+                return rawmessage.clearReactions(s);
+            }
+
+            @NotNull
+            @Override
+            public RestAction<Void> clearReactions(@NotNull Emote emote) {
+                return rawmessage.clearReactions(emote);
+            }
+
+            @NotNull
+            @Override
+            public RestAction<Void> removeReaction(@NotNull Emote emote) {
+                return rawmessage.removeReaction(emote);
+            }
+
+            @NotNull
+            @Override
+            public RestAction<Void> removeReaction(@NotNull Emote emote, @NotNull User user) {
+                return rawmessage.removeReaction(emote, user);
+            }
+
+            @NotNull
+            @Override
+            public RestAction<Void> removeReaction(@NotNull String s) {
+                return rawmessage.removeReaction(s);
+            }
+
+            @NotNull
+            @Override
+            public RestAction<Void> removeReaction(@NotNull String s, @NotNull User user) {
+                return rawmessage.removeReaction(s, user);
+            }
+
+            @NotNull
+            @Override
+            public ReactionPaginationAction retrieveReactionUsers(@NotNull Emote emote) {
+                return rawmessage.retrieveReactionUsers(emote);
+            }
+
+            @NotNull
+            @Override
+            public ReactionPaginationAction retrieveReactionUsers(@NotNull String s) {
+                return rawmessage.retrieveReactionUsers(s);
+            }
+
+            @Nullable
+            @Override
+            public MessageReaction.ReactionEmote getReactionByUnicode(@NotNull String s) {
+                return rawmessage.getReactionByUnicode(s);
+            }
+
+            @Nullable
+            @Override
+            public MessageReaction.ReactionEmote getReactionById(@NotNull String s) {
+                return rawmessage.getReactionById(s);
+            }
+
+            @Nullable
+            @Override
+            public MessageReaction.ReactionEmote getReactionById(long l) {
+                return rawmessage.getReactionById(l);
+            }
+
+            @NotNull
+            @Override
+            public AuditableRestAction<Void> suppressEmbeds(boolean b) {
+                return rawmessage.suppressEmbeds(b);
+            }
+
+            @NotNull
+            @Override
+            public RestAction<Message> crosspost() {
+                return rawmessage.crosspost();
+            }
+
+            @Override
+            public boolean isSuppressedEmbeds() {
+                return rawmessage.isSuppressedEmbeds();
+            }
+
+            @NotNull
+            @Override
+            public EnumSet<MessageFlag> getFlags() {
+                return rawmessage.getFlags();
+            }
+
+            @NotNull
+            @Override
+            public MessageType getType() {
+                return rawmessage.getType();
+            }
+
+            @Override
+            public void formatTo(Formatter formatter, int flags, int width, int precision) {
+
+            }
+
+            @Override
+            public long getIdLong() {
+                return 0;
+            }
+        };
+
+        GuildMessageReceivedEvent ev = new GuildMessageReceivedEvent(event.getJDA(), event.getMessageIdLong(), message1);
+
+        DiscordGuildMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePreProcessEvent(ev));
         if (preEvent.isCancelled()) {
             DiscordSRV.debug("DiscordGuildMessagePreProcessEvent was cancelled, message send aborted");
             return;
@@ -167,11 +671,12 @@ public class DiscordChatListener extends ListenerAdapter {
         }
 
         // strip colors if role doesn't have permission
-        List<String> rolesAllowedToColor = DiscordSRV.config().getStringList("DiscordChatChannelRolesAllowedToUseColorCodesInChat");
+        /*List<String> rolesAllowedToColor = DiscordSRV.config().getStringList("DiscordChatChannelRolesAllowedToUseColorCodesInChat");
         boolean shouldStripColors = !rolesAllowedToColor.contains("@everyone");
         for (Role role : event.getMember().getRoles())
             if (rolesAllowedToColor.contains(role.getName())) shouldStripColors = false;
-        if (shouldStripColors) message = MessageUtil.stripLegacy(message);
+        if (shouldStripColors) */
+
 
         // get the correct format message
         String destinationGameChannelNameForTextChannel = DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel());
@@ -181,7 +686,7 @@ public class DiscordChatListener extends ListenerAdapter {
         boolean isLegacy = MessageUtil.isLegacy(message) || MessageUtil.isLegacy(formatMessage);
 
         message = MessageUtil.toPlain(MessageUtil.reserializeToMinecraftBasedOnConfig(message), isLegacy);
-        if (!isLegacy && shouldStripColors) message = MessageUtil.escapeMiniTokens(message);
+        if (!isLegacy) message = MessageUtil.escapeMiniTokens(message);
         message = DiscordUtil.convertMentionsToNames(message);
 
         if (StringUtils.isBlank(message)) {

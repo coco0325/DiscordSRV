@@ -351,7 +351,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
         code = code.replaceAll("[^0-9]", "");
         UUID uuid = getLinkingCodes().get(code);
 
-        if (uuid != null && Bukkit.getOnlinePlayers().stream().noneMatch(player -> player.getUniqueId().equals(uuid))) {
+        if (uuid == null || Bukkit.getOnlinePlayers().stream().noneMatch(player -> player.getUniqueId().equals(uuid))) {
             return null;
         }
 
@@ -370,34 +370,29 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
         // strip the code to get rid of non-numeric characters
 
-        if (uuid != null) {
-            link(discordId, uuid);
+        link(discordId, uuid);
 
-            try (final PreparedStatement statement = connection.prepareStatement("delete from " + codesTable + " where `code` = ?")) {
-                statement.setString(1, code);
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                DiscordSRV.error(e);
-            }
-
-            OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-            if (player.isOnline()) {
-                MessageUtil.sendMessage(player.getPlayer(), LangUtil.Message.MINECRAFT_ACCOUNT_LINKED.toString()
-                        .replace("%username%", DiscordUtil.getUserById(discordId).getName())
-                        .replace("%id%", DiscordUtil.getUserById(discordId).getId())
-                );
-            }else{
-                 return null;
-            }
-
-            return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
-                    .replace("%name%", player.getName() != null ? player.getName() : "<未知>")
-                    .replace("%uuid%", uuid.toString());
+        try (final PreparedStatement statement = connection.prepareStatement("delete from " + codesTable + " where `code` = ?")) {
+            statement.setString(1, code);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            DiscordSRV.error(e);
         }
 
-        return code.length() == 4
-                ? LangUtil.Message.UNKNOWN_CODE.toString()
-                : LangUtil.Message.INVALID_CODE.toString();
+        OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+        if (player.isOnline()) {
+            MessageUtil.sendMessage(player.getPlayer(), LangUtil.Message.MINECRAFT_ACCOUNT_LINKED.toString()
+                    .replace("%username%", DiscordUtil.getUserById(discordId).getName())
+                    .replace("%id%", DiscordUtil.getUserById(discordId).getId())
+            );
+        }else{
+             return null;
+        }
+
+        return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
+                .replace("%name%", player.getName() != null ? player.getName() : "<未知>")
+                .replace("%uuid%", uuid.toString());
+
     }
 
     @Override
@@ -587,7 +582,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
         String discord = getDiscordId(uuid);
         if (discord == null) return;
 
-        beforeUnlink(uuid, discord);
+        //beforeUnlink(uuid, discord);
         try (final PreparedStatement statement = connection.prepareStatement("delete from " + accountsTable + " where `uuid` = ?")) {
             statement.setString(1, uuid.toString());
             statement.executeUpdate();
@@ -604,7 +599,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
         UUID uuid = getUuid(discordId);
         if (uuid == null) return;
 
-        beforeUnlink(uuid, discordId);
+        //beforeUnlink(uuid, discordId);
         try (final PreparedStatement statement = connection.prepareStatement("delete from " + accountsTable + " where `discord` = ?")) {
             statement.setString(1, discordId);
             statement.executeUpdate();

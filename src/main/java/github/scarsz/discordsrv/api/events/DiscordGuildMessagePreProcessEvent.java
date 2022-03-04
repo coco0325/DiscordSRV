@@ -51,4 +51,13 @@ public class DiscordGuildMessagePreProcessEvent extends DiscordEvent<GuildMessag
         this.message = jdaEvent.getMessage();
     }
 
+    public DiscordGuildMessagePreProcessEvent(GuildMessageReceivedEvent jdaEvent, Message message){
+        super(jdaEvent.getJDA(), jdaEvent);
+        this.author = jdaEvent.getAuthor();
+        this.channel = jdaEvent.getChannel();
+        this.guild = jdaEvent.getGuild();
+        this.member = jdaEvent.getMember();
+        this.message = message;
+    }
+
 }
