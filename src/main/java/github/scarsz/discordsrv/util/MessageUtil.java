@@ -47,6 +47,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -341,9 +342,26 @@ public class MessageUtil {
      */
     public static void sendMessage(Iterable<? extends CommandSender> commandSenders, Component adventureMessage) {
         Set<Audience> audiences = new HashSet<>();
-        commandSenders.forEach(sender -> audiences.add(getAudiences().sender(sender)));
+        Set<Audience> degradedAudiences = new HashSet<>();
+        commandSenders.forEach(sender -> {
+            Audience audience = getAudiences().sender(sender);
+            if (sender instanceof Player && DiscordSRV.getPlugin().getIncompatibleClientManager().isIncompatible((Player) sender)) {
+                degradedAudiences.add(audience);
+            } else {
+                audiences.add(audience);
+            }
+        });
+
         try {
-            Audience.audience(audiences).sendMessage(Identity.nil(), adventureMessage);
+            if (!audiences.isEmpty()) {
+                Audience.audience(audiences).sendMessage(Identity.nil(), adventureMessage);
+            }
+
+            if (!degradedAudiences.isEmpty()) {
+                // Put it through legacy serializer for degraded audiences
+                Component degraded = LEGACY_SERIALIZER.deserialize(LEGACY_SERIALIZER.serialize(adventureMessage));
+                Audience.audience(degradedAudiences).sendMessage(Identity.nil(), degraded);
+            }
         } catch (NoClassDefFoundError e) {
             // might happen with 1.7
             if (e.getMessage().equals("org/bukkit/command/ProxiedCommandSender")) {
